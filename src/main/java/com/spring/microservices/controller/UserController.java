@@ -1,7 +1,10 @@
 package com.spring.microservices.controller;
 
+import java.util.List;
 import java.util.UUID;
 
+import com.spring.microservices.client.Post;
+import com.spring.microservices.client.PostClient;
 import com.spring.microservices.client.Profile;
 import com.spring.microservices.client.ProfileClient;
 import com.spring.microservices.model.User;
@@ -24,6 +27,9 @@ public class UserController {
     @Autowired
     private ProfileClient client;
 
+    @Autowired
+    private PostClient postClient;
+
     @PostMapping("/user")
     public User newUser(@RequestBody User body) {
         User user = new User(body.getUsername(), UUID.randomUUID().toString());
@@ -41,5 +47,11 @@ public class UserController {
     public Profile getProfile(@PathVariable("id") UUID id) {
         Profile profile = client.getProfile(id);
         return profile;
+    }
+
+    @GetMapping("/user/posts/{author}")
+    public List<Post> getPosts(@PathVariable("author") UUID author) {
+        List<Post> posts = postClient.getByAuthor(author);
+        return posts;
     }
 }
